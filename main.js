@@ -8,7 +8,7 @@ var KEYS = {
   P: 80,
 };
 
-var WIDTH = 10;
+var BS = 10; // block size
 var FPS = 30;
 var SPEED_PER_SEC = 5;
 
@@ -23,30 +23,30 @@ var shapes = [
       //   =
       //   ==
       function(ctx, x, y){
-        ctx.fillRect(x, y, WIDTH, WIDTH*2);
-        ctx.fillRect(x, y+(WIDTH*2), WIDTH*2, WIDTH);
+        ctx.fillRect(x, y, BS, BS*2);
+        ctx.fillRect(x, y+(BS*2), BS*2, BS);
       },
 
       //   ===
       //   =
       function(ctx, x, y){
-        ctx.fillRect(x, y, WIDTH*3, WIDTH);
-        ctx.fillRect(x, y+WIDTH, WIDTH, WIDTH);
+        ctx.fillRect(x, y, BS*3, BS);
+        ctx.fillRect(x, y+BS, BS, BS);
       },
 
       //   ==
       //    =
       //    =
       function(ctx, x, y){
-        ctx.fillRect(x, y, WIDTH*2, WIDTH);
-        ctx.fillRect(x+WIDTH, y+WIDTH, WIDTH, WIDTH*2);
+        ctx.fillRect(x, y, BS*2, BS);
+        ctx.fillRect(x+BS, y+BS, BS, BS*2);
       },
 
       //      =
       //    ===
       function(ctx, x, y){
-        ctx.fillRect(x+(WIDTH*2), y, WIDTH, WIDTH);
-        ctx.fillRect(x, y+WIDTH, WIDTH*3, WIDTH);
+        ctx.fillRect(x+(BS*2), y, BS, BS);
+        ctx.fillRect(x, y+BS, BS*3, BS);
       },
     ]
   },
@@ -60,15 +60,15 @@ var shapes = [
       //   ==
       //    =
       function (ctx, x, y){
-        ctx.fillRect(x, y, WIDTH, WIDTH*2);
-        ctx.fillRect(x+WIDTH, y+WIDTH, WIDTH, WIDTH*2);
+        ctx.fillRect(x, y, BS, BS*2);
+        ctx.fillRect(x+BS, y+BS, BS, BS*2);
       },
 
       //    ==
       //   ==
       function (ctx, x, y){
-        ctx.fillRect(x+WIDTH, y, WIDTH*2, WIDTH);
-        ctx.fillRect(x, y+WIDTH, WIDTH*2, WIDTH);
+        ctx.fillRect(x+BS, y, BS*2, BS);
+        ctx.fillRect(x, y+BS, BS*2, BS);
       },
     ]
   },
@@ -81,30 +81,30 @@ var shapes = [
       //   ==
       //   =
       function (ctx, x, y){
-        ctx.fillRect(x, y, WIDTH, WIDTH*3);
-        ctx.fillRect(x+WIDTH, y+WIDTH, WIDTH, WIDTH);
+        ctx.fillRect(x, y, BS, BS*3);
+        ctx.fillRect(x+BS, y+BS, BS, BS);
       },
 
       //    =
       //   ===
       function (ctx, x, y){
-        ctx.fillRect(x+WIDTH, y, WIDTH, WIDTH);
-        ctx.fillRect(x, y+WIDTH, WIDTH*3, WIDTH);
+        ctx.fillRect(x+BS, y, BS, BS);
+        ctx.fillRect(x, y+BS, BS*3, BS);
       },
 
       //    =
       //   ==
       //    =
       function (ctx, x, y){
-        ctx.fillRect(x, y+WIDTH, WIDTH, WIDTH);
-        ctx.fillRect(x+WIDTH, y, WIDTH, WIDTH*3);
+        ctx.fillRect(x, y+BS, BS, BS);
+        ctx.fillRect(x+BS, y, BS, BS*3);
       },
 
       //   ===
       //    =
       function (ctx, x, y){
-        ctx.fillRect(x, y, WIDTH*3, WIDTH);
-        ctx.fillRect(x+WIDTH, y+WIDTH, WIDTH, WIDTH);
+        ctx.fillRect(x, y, BS*3, BS);
+        ctx.fillRect(x+BS, y+BS, BS, BS);
       }
     ]
   },
@@ -118,12 +118,12 @@ var shapes = [
       //   =
       //   =
       function(ctx, x, y){
-        ctx.fillRect(x, y, WIDTH, WIDTH*4);
+        ctx.fillRect(x, y, BS, BS*4);
       },
 
       //   ====
       function(ctx, x, y){
-        ctx.fillRect(x, y, WIDTH*4, WIDTH);
+        ctx.fillRect(x, y, BS*4, BS);
       },
     ]
   },
@@ -135,7 +135,7 @@ var shapes = [
       //   ==
       //   ==
       function(ctx, x, y){
-        ctx.fillRect(x, y, WIDTH*2, WIDTH*2);
+        ctx.fillRect(x, y, BS*2, BS*2);
       },
     ]
   }
@@ -184,11 +184,11 @@ var Game = function(ctx, boardWidth, boardHeight){
     ctx.clearRect(0, 0, boardWidth, boardHeight);
 
     if (currentKey === KEYS.RIGHT){
-      currentPiece.move(WIDTH, 0);
+      currentPiece.move(BS, 0);
     } else if (currentKey === KEYS.LEFT){
-      currentPiece.move(-WIDTH, 0);
+      currentPiece.move(-BS, 0);
     } else if (currentKey === KEYS.DOWN){
-      currentPiece.move(0, WIDTH);
+      currentPiece.move(0, BS);
     } else if (currentKey === KEYS.UP){
       currentPiece.rotate();
       currentKey = undefined;
@@ -205,7 +205,7 @@ var Game = function(ctx, boardWidth, boardHeight){
   }
 
   function tick(){
-    var isAtBottom = currentPiece.move(0, WIDTH);
+    var isAtBottom = currentPiece.move(0, BS);
     if (isAtBottom){
       nextPiece();
     }
@@ -226,8 +226,8 @@ var Game = function(ctx, boardWidth, boardHeight){
 function main(){
   var game;
   var canvas;
-  var boardWidth = 30*WIDTH;
-  var boardHeight = 50*WIDTH;
+  var boardWidth = 30*BS;
+  var boardHeight = 50*BS;
 
   document.onkeydown = function(e){
     game.keyDown(e.keyCode);
