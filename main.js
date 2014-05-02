@@ -169,7 +169,7 @@ function Piece(ctx, shape, x, y){
 }
 
 
-var Game = function(ctx, boardWidth, boardHeight){
+var Game = function(ctx, boardWidthBlocks, boardHeightBlocks){
   var currentKey;
   var currentPiece;
   var currentShape;
@@ -181,7 +181,7 @@ var Game = function(ctx, boardWidth, boardHeight){
   }
 
   function draw(){
-    ctx.clearRect(0, 0, boardWidth, boardHeight);
+    ctx.clearRect(0, 0, boardWidthBlocks*BS, boardHeightBlocks*BS);
 
     if (currentKey === KEYS.RIGHT){
       currentPiece.move(BS, 0);
@@ -226,8 +226,8 @@ var Game = function(ctx, boardWidth, boardHeight){
 function main(){
   var game;
   var canvas;
-  var boardWidth = 30*BS;
-  var boardHeight = 50*BS;
+  var boardWidthBlocks = 30;
+  var boardHeightBlocks = 50;
 
   document.onkeydown = function(e){
     game.keyDown(e.keyCode);
@@ -236,11 +236,11 @@ function main(){
   document.onkeyup = function(e){game.keyUp()};
 
   canvas = document.getElementById('tutorial');
-  canvas.width = boardWidth;
-  canvas.height = boardHeight;
+  canvas.width = boardWidthBlocks*BS;
+  canvas.height = boardHeightBlocks*BS;
   if (canvas.getContext){
     var ctx = canvas.getContext('2d');
-    game = Game(ctx, boardWidth, boardHeight);
+    game = Game(ctx, boardWidthBlocks, boardHeightBlocks);
 
     var x = 5;
     var y = 50;
