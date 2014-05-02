@@ -225,7 +225,7 @@ var Game = function(ctx){
 
 function main(){
   var game;
-  var canvas = document.getElementById('tutorial');
+  var canvas;
 
   document.onkeydown = function(e){
     game.keyDown(e.keyCode);
@@ -233,7 +233,7 @@ function main(){
   };
   document.onkeyup = function(e){game.keyUp()};
 
-
+  canvas = document.getElementById('tutorial');
   if (canvas.getContext){
     var ctx = canvas.getContext('2d');
     game = Game(ctx);
