@@ -177,7 +177,7 @@ var Game = function(ctx, boardWidthBlocks, boardHeightBlocks){
   function nextPiece(){
     shapes.push(currentShape);
     currentShape = shapes.shift();
-    currentPiece = Piece(ctx, currentShape, 10, 10);
+    currentPiece = Piece(ctx, currentShape, boardWidthBlocks*BS/2, 0);
   }
 
   function draw(){
