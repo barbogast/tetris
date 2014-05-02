@@ -158,7 +158,7 @@ function Piece(ctx, shape, x, y){
   function move(mx, my){
     x += mx;
     y += my;
-    return y >= 400;
+    return y;
   }
 
   return {
@@ -205,8 +205,8 @@ var Game = function(ctx, boardWidthBlocks, boardHeightBlocks){
   }
 
   function tick(){
-    var isAtBottom = currentPiece.move(0, BS);
-    if (isAtBottom){
+    var y = currentPiece.move(0, BS);
+    if (y >= boardHeightBlocks*BS){
       nextPiece();
     }
   }
