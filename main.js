@@ -67,8 +67,8 @@ var shapes = [
       //    ==
       //   ==
       function (ctx, x, y){
-        ctx.fillRect(x, y, WIDTH*2, WIDTH);
-        ctx.fillRect(x+WIDTH, y+WIDTH, WIDTH*2, WIDTH);
+        ctx.fillRect(x+WIDTH, y, WIDTH*2, WIDTH);
+        ctx.fillRect(x, y+WIDTH, WIDTH*2, WIDTH);
       },
     ]
   },
