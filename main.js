@@ -185,7 +185,7 @@ function main(){
 
   function nextShape(){
     if(currentShape){
-      currentShape.push(shapes);
+      shapes.push(currentShape);
     }
     currentShape = shapes.shift();
     currentShape.currentRotationIndex = 0;
