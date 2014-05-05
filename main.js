@@ -71,19 +71,25 @@ function Piece(shape){
     y: shape.initialYOffset
   };
 
-  function draw(ctx, remove){
+  function eachCurrentOffset(handler){
     var offsets = shape.rotations[currentRotationIndex];
+    for(var i=0; i<offsets.length; i++){
+      handler(offsets[i]);
+    }
+  }
+
+  function draw(ctx, remove){
     var x, y, color;
     if (remove){
       ctx.fillStyle = 'white';
     } else {
       ctx.fillStyle = shape.color;
     }
-    for(var i=0; i<offsets.length; i++){
-      x = currentCenter.x + offsets[i][0];
-      y = currentCenter.y + offsets[i][1];
+    eachCurrentOffset(function(offset){
+      x = currentCenter.x + offset[0];
+      y = currentCenter.y + offset[1];
       ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-    }
+    });
   }
 
   function rotate(){
