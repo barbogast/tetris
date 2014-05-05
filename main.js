@@ -71,10 +71,13 @@ function Piece(shape){
     y: shape.initialYOffset
   };
 
-  function eachCurrentOffset(handler){
+  function eachBlock(handler){
     var offsets = shape.rotations[currentRotationIndex];
+    var x, y;
     for(var i=0; i<offsets.length; i++){
-      handler(offsets[i]);
+      x = currentCenter.x+offsets[i][0];
+      y = currentCenter.y+offsets[i][1];
+      handler(x, y);
     }
   }
 
@@ -85,9 +88,7 @@ function Piece(shape){
     } else {
       ctx.fillStyle = shape.color;
     }
-    eachCurrentOffset(function(offset){
-      x = currentCenter.x + offset[0];
-      y = currentCenter.y + offset[1];
+    eachBlock(function(x, y){
       ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
     });
   }
@@ -98,18 +99,18 @@ function Piece(shape){
 
     // Revert the rotation to the old index if the new rotation would
     // mean that a part of the piece would be below zero
-    eachCurrentOffset(function(offset){
-      if (currentCenter.y+offset[1] >= FIELD_HEIGHT){
+    eachBlock(function(x, y){
+      if (y >= FIELD_HEIGHT){
         currentRotationIndex = oldRotationIndex;
       }
     });
 
     // If the new rotation means that the piece would be beyond the
     // left/right border the piece is moved on into the middle
-    eachCurrentOffset(function(offset){
-      if(currentCenter.x+offset[0] < 0){
+    eachBlock(function(x, y){
+      if(x < 0){
         move(1, 0);
-      } else if (currentCenter.x+offset[0] > FIELD_WIDTH-1){
+      } else if (x > FIELD_WIDTH-1){
         move(-1, 0);
       }
     });
@@ -122,8 +123,8 @@ function Piece(shape){
 
   function touchesLeftBorder(){
     var touches = false;
-    eachCurrentOffset(function(offset){
-      if(currentCenter.x+offset[0] <= 0){
+    eachBlock(function(x, y){
+      if(x <= 0){
         touches = true;
       }
     });
@@ -132,8 +133,8 @@ function Piece(shape){
 
   function touchesRightBorder(){
     var touches = false;
-    eachCurrentOffset(function(offset){
-      if(currentCenter.x+offset[0] >= FIELD_WIDTH-1){
+    eachBlock(function(x, y){
+      if(x >= FIELD_WIDTH-1){
         touches = true;
       }
     });
@@ -142,8 +143,8 @@ function Piece(shape){
 
   function touchesBottomBorder(){
     var touches = false;
-    eachCurrentOffset(function(offset){
-      if(currentCenter.y+offset[1] >= FIELD_HEIGHT){
+    eachBlock(function(x, y){
+      if(y >= FIELD_HEIGHT){
         touches = true;
       }
     });
