@@ -246,7 +246,7 @@ function Field(){
     for(var y=0; y<FIELD_HEIGHT; y++){
       for(var x=0; x<FIELD_WIDTH; x++){
         if(content[y][x]){
-          ctx.fillStyle = COLORS[content[y][x]];
+          ctx.fillStyle = content[y][x];
           ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         }
       }
