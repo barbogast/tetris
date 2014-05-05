@@ -311,36 +311,39 @@ function main(){
     var ctx = canvas.getContext('2d');
     piece.draw(ctx, false);
 
+    var lastTick = new Date();
     setInterval(function(){
-      field.draw(ctx);
-      if (currentKey){
+      var goDown = false;
+      var currentTick = new Date();
+      if (currentTick - lastTick > 1000 / TICKS_PER_SEC){
+        goDown = true;
+        lastTick = currentTick;
+      }
+
+      if (goDown || currentKey === KEYS.DOWN){
         piece.draw(ctx, true);
-        if (currentKey === KEYS.RIGHT){
-          piece.move(field, 1, 0);
-        } else if (currentKey === KEYS.LEFT){
-          piece.move(field, -1, 0);
-        } else if (currentKey === KEYS.DOWN){
-          var touched = piece.move(field, 0, 1);
-          if (touched){
-            field.addPiece(piece);
-            piece = nextPiece();
-          }
-        } else if (currentKey === KEYS.UP){
-          piece.rotate();
-          currentKey = undefined;
+        var touched = piece.move(field, 0, 1);
+        if (touched){
+          field.addPiece(piece);
+          field.draw(ctx);
+          piece = nextPiece();
+        } else {
+          piece.draw(ctx, false);
         }
+      } else if (currentKey === KEYS.LEFT){
+        piece.draw(ctx, true);
+        piece.move(field, -1, 0);
         piece.draw(ctx, false);
+      } else if (currentKey === KEYS.RIGHT){
+        piece.draw(ctx, true);
+        piece.move(field, 1, 0);
+        piece.draw(ctx, false);
+      } else if (currentKey === KEYS.UP){
+        piece.draw(ctx, true);
+        piece.rotate();
+        piece.draw(ctx, false);
+        currentKey = undefined;
       }
     }, 1000/FPS);
-
-    setInterval(function(){
-      var touched = piece.move(field, 0, 1);
-      if (touched){
-        field.addPiece(piece);
-        piece = nextPiece();
-      } else {
-        piece.draw(ctx, false);
-      }
-    }, 1000/0.1);//SPEED_PER_SEC);
   }
 }
