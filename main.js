@@ -118,6 +118,8 @@ function main(){
   canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
   if (canvas.getContext){
     var ctx = canvas.getContext('2d');
+    drawShape(ctx, currentShape, currentShapeCenter, currentShape.color);
+
     setInterval(function(){
       drawField(ctx, field);
     }, 1000/FPS);
