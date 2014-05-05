@@ -24,7 +24,7 @@ var COLORS = {
 
 
 var shapes = [{
-  color: 'blue',
+  color: 'green',
 
   // Array of the various possible rotations of the shape. Each rotation
   // if an array of offsets. Each offset is an array of the x offset and
@@ -62,6 +62,94 @@ var shapes = [{
   ],
   initialRotation: 0,
   initialYOffset: -1,
+},{
+  color: 'blue',
+  rotations: [
+    //   1
+    //   c
+    //   23
+    [[0, -1],  // 1
+     [0,  0],  // center
+     [0,  1],  // 2
+     [1,  1]], // 3
+
+    //   2c1
+    //   3
+    [[-1, 0],  // 2
+     [ 0, 0],  // center
+     [ 1, 0],  // 1
+     [-1, 1]], // 3
+
+    //   32
+    //    c
+    //    1
+    [[-1, -1],  // 3
+     [ 0, -1],  // 2
+     [ 0,  0],  // center
+     [ 0,  1]], // 1
+
+    //      3
+    //    1c2
+    [[ 1, -1],  // 3
+     [-1,  0],  // 1
+     [ 0,  0],  // center
+     [ 1,  0]], // 2
+  ],
+  initialRotation: 0,
+  initialYOffset: -1,
+},{
+  color: 'yellow',
+  rotations: [
+    //    c1
+    //   23
+    [[ 0,  0],  // center
+     [ 1,  0],  // 1
+     [-1,  1],  // 2
+     [ 0,  1]], // 3
+
+    //   1
+    //   c3
+    //    2
+    [[ 0, -1],  // 1
+     [ 0,  0],  // center
+     [ 1,  0],  // 3
+     [ 1,  1]]  // 2
+
+  ],
+  initialRotation: 0,
+  initialYOffset: 0,
+},{
+  color: 'red',
+  rotations: [
+    //   1
+    //   c
+    //   2
+    //   3
+    [[ 0, -1],  // 1
+     [ 0,  0],  // center
+     [ 0,  1],  // 2
+     [ 0,  2]], // 3
+
+    //   32c1
+    [[ -2, 0],  // 3
+     [ -1, 0],  // 2
+     [  0, 0],  // center
+     [  1, 0]], // 1
+    ],
+    initialRotation: 0,
+    initialYOffset: -1,
+},{
+  color: 'orange',
+  rotations: [
+    //   c1
+    //   23
+    [[ 0,  0],  // center
+     [ 1,  0],  // 1
+     [ 0,  1],  // 2
+     [ 1,  1]],  // 3
+    ],
+    initialRotation: 0,
+    initialYOffset: 0,
 }]
 
 function Piece(shape){
