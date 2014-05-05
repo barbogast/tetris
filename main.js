@@ -334,12 +334,11 @@ function main(){
     }, 1000/FPS);
 
     setInterval(function(){
-      piece.draw(ctx, true);
-      if (piece.touchesBottomBorder()){
+      var touched = piece.move(field, 0, 1);
+      if (touched){
         field.addPiece(piece);
         piece = nextPiece();
       } else {
-        piece.move(field, 0, 1);
         piece.draw(ctx, false);
       }
     }, 1000/0.1);//SPEED_PER_SEC);
