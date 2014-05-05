@@ -8,245 +8,123 @@ var KEYS = {
   P: 80,
 };
 
-var BS = 10; // block size
 var FPS = 30;
 var SPEED_PER_SEC = 5;
+
+
+var FIELD_WIDTH = 40;
+var FIELD_HEIGHT = 80;
+var BLOCK_SIZE = 10;
+var COLORS = {
+  1: 'yellow',
+  2: 'red',
+  3: 'green',
+  4: 'blue',
+}
 
 
 var shapes = [
   {
     color: 'blue',
-
     rotations: [
+      //   1
+      //   c2
+      //   3
+      [[ 0, -1],  // 1
+       [ 0,  0],  // center
+       [ 1,  0],  // 2
+       [ 0,  1]], // 3
 
-      //   =
-      //   =
-      //   ==
-      function(ctx, x, y){
-        ctx.fillRect(x, y, BS, BS*2);
-        ctx.fillRect(x, y+(BS*2), BS*2, BS);
-      },
+      //    2
+      //   1c3
+      [[ 0,  1],  // 2
+       [-1,  0],  // 1
+       [ 0,  0],  // center
+       [ 1,  0]], // 3
 
-      //   ===
-      //   =
-      function(ctx, x, y){
-        ctx.fillRect(x, y, BS*3, BS);
-        ctx.fillRect(x, y+BS, BS, BS);
-      },
+      //    3
+      //   2c
+      //    1
+      [[ 0, -1],  // 3
+       [-1,  0],  // 2
+       [ 0,  0],  // center
+       [ 0,  1]], // 1
 
-      //   ==
-      //    =
-      //    =
-      function(ctx, x, y){
-        ctx.fillRect(x, y, BS*2, BS);
-        ctx.fillRect(x+BS, y+BS, BS, BS*2);
-      },
+      //   3c1
+      //    2
+      [[-1,  0],  // 3
+       [ 0,  0],  // center
+       [ 1,  0],  // 1
+       [ 0, -1]], // 2
+    ],
+    currentRotationIndex: 0,
+    initialHeight: 3
+  }
+]
 
-      //      =
-      //    ===
-      function(ctx, x, y){
-        ctx.fillRect(x+(BS*2), y, BS, BS);
-        ctx.fillRect(x, y+BS, BS*3, BS);
-      },
-    ]
-  },
 
-  {
-    color: 'yellow',
-
-    rotations: [
-
-      //   =
-      //   ==
-      //    =
-      function (ctx, x, y){
-        ctx.fillRect(x, y, BS, BS*2);
-        ctx.fillRect(x+BS, y+BS, BS, BS*2);
-      },
-
-      //    ==
-      //   ==
-      function (ctx, x, y){
-        ctx.fillRect(x+BS, y, BS*2, BS);
-        ctx.fillRect(x, y+BS, BS*2, BS);
-      },
-    ]
-  },
-
-  {
-    color: 'green',
-
-    rotations: [
-      //   =
-      //   ==
-      //   =
-      function (ctx, x, y){
-        ctx.fillRect(x, y, BS, BS*3);
-        ctx.fillRect(x+BS, y+BS, BS, BS);
-      },
-
-      //    =
-      //   ===
-      function (ctx, x, y){
-        ctx.fillRect(x+BS, y, BS, BS);
-        ctx.fillRect(x, y+BS, BS*3, BS);
-      },
-
-      //    =
-      //   ==
-      //    =
-      function (ctx, x, y){
-        ctx.fillRect(x, y+BS, BS, BS);
-        ctx.fillRect(x+BS, y, BS, BS*3);
-      },
-
-      //   ===
-      //    =
-      function (ctx, x, y){
-        ctx.fillRect(x, y, BS*3, BS);
-        ctx.fillRect(x+BS, y+BS, BS, BS);
+function drawField(ctx, field){
+  for(var y=0; y<FIELD_HEIGHT; y++){
+    for(var x=0; x<FIELD_WIDTH; x++){
+      if(field[y][x]){
+        ctx.fillStyle = COLORS[field[y][x]];
+        ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
       }
-    ]
-  },
-
-  {
-    color: 'red',
-
-    rotations: [
-      //   =
-      //   =
-      //   =
-      //   =
-      function(ctx, x, y){
-        ctx.fillRect(x, y, BS, BS*4);
-      },
-
-      //   ====
-      function(ctx, x, y){
-        ctx.fillRect(x, y, BS*4, BS);
-      },
-    ]
-  },
-
-  {
-    color: 'orange',
-
-    rotations: [
-      //   ==
-      //   ==
-      function(ctx, x, y){
-        ctx.fillRect(x, y, BS*2, BS*2);
-      },
-    ]
-  }
-];
-
-
-function Piece(ctx, shape, x, y){
-  var currentRotationIndex = 0;
-
-  function rotate(){
-    console.log('rotate');
-    currentRotationIndex = (currentRotationIndex + 1) % shape.rotations.length;
-  }
-
-  function draw(){
-    ctx.fillStyle = shape.color;
-    shape.rotations[currentRotationIndex](ctx, x, y);
-  }
-
-  function move(mx, my){
-    x += mx;
-    y += my;
-    return y;
-  }
-
-  return {
-    draw: draw,
-    rotate: rotate,
-    move: move,
+    }
   }
 }
 
-
-var Game = function(ctx, boardWidthBlocks, boardHeightBlocks){
-  var currentKey;
-  var currentPiece;
-  var currentShape;
-
-  function nextPiece(){
-    shapes.push(currentShape);
-    currentShape = shapes.shift();
-    currentPiece = Piece(ctx, currentShape, boardWidthBlocks*BS/2, 0);
-  }
-
-  function draw(){
-    ctx.clearRect(0, 0, boardWidthBlocks*BS, boardHeightBlocks*BS);
-
-    if (currentKey === KEYS.RIGHT){
-      currentPiece.move(BS, 0);
-    } else if (currentKey === KEYS.LEFT){
-      currentPiece.move(-BS, 0);
-    } else if (currentKey === KEYS.DOWN){
-      currentPiece.move(0, BS);
-    } else if (currentKey === KEYS.UP){
-      currentPiece.rotate();
-      currentKey = undefined;
-    }
-    currentPiece.draw();
-  }
-
-  function keyDown(keyCode){
-    currentKey = keyCode;
-  }
-
-  function keyUp(){
-    currentKey = undefined;
-  }
-
-  function tick(){
-    var y = currentPiece.move(0, BS);
-    if (y >= boardHeightBlocks*BS){
-      nextPiece();
-    }
-  }
-
-  currentShape = shapes.shift()
-  nextPiece();
-
-  return {
-    draw: draw,
-    keyDown: keyDown,
-    keyUp: keyUp,
-    tick: tick,
+function drawShape(ctx, shape, center, color){
+  var offsets = shape.rotations[shape.currentRotationIndex];
+  var x;
+  var y;
+  for(var i=0; i<offsets.length; i++){
+    x = center.x + offsets[i][0];
+    y = center.y + offsets[i][1];
+    ctx.fillStyle = color;
+    ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
   }
 }
 
+function rotateShape(shape){
+  shape.currentRotationIndex = (shape.currentRotationIndex + 1) % shape.rotations.length;
+}
 
 function main(){
-  var game;
-  var canvas;
-  var boardWidthBlocks = 30;
-  var boardHeightBlocks = 50;
+  var field = Array(FIELD_HEIGHT);
+  for(var i=0; i< FIELD_HEIGHT; i++){
+    field[i] = Array(FIELD_WIDTH);
+  }
 
-  document.onkeydown = function(e){
-    game.keyDown(e.keyCode);
-    if (KEYS[e.keyCode]){return false;}
-  };
-  document.onkeyup = function(e){game.keyUp()};
+  var currentShape;
+  var currentShapeCenter;
+
+  function nextShape(){
+    if(currentShape){
+      currentShape.push(shapes);
+    }
+    currentShape = shapes.shift();
+    currentShapeCenter = {x: Math.floor(FIELD_WIDTH/2), y: 1-currentShape.initialHeight};
+  }
+  nextShape();
+
+
+  var canvas;
 
   canvas = document.getElementById('tutorial');
-  canvas.width = boardWidthBlocks*BS;
-  canvas.height = boardHeightBlocks*BS;
+  canvas.width = FIELD_WIDTH * BLOCK_SIZE;
+  canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
   if (canvas.getContext){
     var ctx = canvas.getContext('2d');
-    game = Game(ctx, boardWidthBlocks, boardHeightBlocks);
+    setInterval(function(){
+      drawField(ctx, field);
+    }, 1000/FPS);
 
-    var x = 5;
-    var y = 50;
-    var s = 1;
-
-    setInterval(game.draw, 1000/FPS);
-    setInterval(game.tick, 1000/SPEED_PER_SEC);
+    setInterval(function(){
+      drawShape(ctx, currentShape, currentShapeCenter, 'white');
+      rotateShape(currentShape);
+      currentShapeCenter.y += 1;
+      drawShape(ctx, currentShape, currentShapeCenter, currentShape.color);
+    }, 1000/1);//SPEED_PER_SEC);
   }
 }
