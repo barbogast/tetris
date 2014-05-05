@@ -100,7 +100,7 @@ function Piece(shape){
     // Revert the rotation to the old index if the new rotation would
     // mean that a part of the piece would be below zero
     eachBlock(function(x, y){
-      if (y >= FIELD_HEIGHT){
+      if (y > FIELD_HEIGHT){
         currentRotationIndex = oldRotationIndex;
       }
     });
@@ -144,7 +144,7 @@ function Piece(shape){
   function touchesBottomBorder(){
     var touches = false;
     eachBlock(function(x, y){
-      if(y >= FIELD_HEIGHT){
+      if(y >= FIELD_HEIGHT-1){
         touches = true;
       }
     });
