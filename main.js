@@ -93,7 +93,27 @@ function Piece(shape){
   }
 
   function rotate(){
+    var oldRotationIndex = currentRotationIndex;
     currentRotationIndex = (currentRotationIndex + 1) % shape.rotations.length;
+
+    // Revert the rotation to the old index if the new rotation would
+    // mean that a part of the piece would be below zero
+    eachCurrentOffset(function(offset){
+      console.log(currentCenter.y, offset[1]);
+      if (currentCenter.y+offset[1] >= FIELD_HEIGHT){
+        currentRotationIndex = oldRotationIndex;
+      }
+    });
+
+    // If the new rotation means that the piece would be beyond the
+    // left/right border the piece is moved on into the middle
+    eachCurrentOffset(function(offset){
+      if(currentCenter.x+offset[0] < 0){
+        move(1, 0);
+      } else if (currentCenter.x+offset[0] > FIELD_WIDTH-1){
+        move(-1, 0);
+      }
+    });
   }
 
   function move(xOffset, yOffset){
