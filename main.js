@@ -64,6 +64,43 @@ var shapes = [{
   initialYOffset: -1,
 }]
 
+function Piece(shape){
+  var currentRotationIndex = 0;
+  var currentCenter = {
+    x: Math.floor(FIELD_WIDTH/2),
+    y: shape.initialYOffset
+  };
+
+  function draw(ctx, remove){
+    var offsets = shape.rotations[currentRotationIndex];
+    var x, y, color;
+    if (remove){
+      ctx.fillStyle = 'white';
+    } else {
+      ctx.fillStyle = shape.color;
+    }
+    for(var i=0; i<offsets.length; i++){
+      x = currentCenter.x + offsets[i][0];
+      y = currentCenter.y + offsets[i][1];
+      ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+    }
+  }
+
+  function rotate(){
+    currentRotationIndex = (currentRotationIndex + 1) % shape.rotations.length;
+  }
+
+  function move(xOffset, yOffset){
+    currentCenter.x += xOffset;
+    currentCenter.y += yOffset;
+  }
+
+  return {
+    draw: draw,
+    rotate: rotate,
+    move: move
+  };
+}
 
 function drawField(ctx, field){
   for(var y=0; y<FIELD_HEIGHT; y++){
@@ -76,21 +113,8 @@ function drawField(ctx, field){
   }
 }
 
-function drawShape(ctx, shape, center, color){
-  var offsets = shape.rotations[shape.currentRotationIndex];
-  var x;
-  var y;
-  for(var i=0; i<offsets.length; i++){
-    x = center.x + offsets[i][0];
-    y = center.y + offsets[i][1];
-    ctx.fillStyle = color;
-    ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-  }
-}
 
-function rotateShape(shape){
-  shape.currentRotationIndex = (shape.currentRotationIndex + 1) % shape.rotations.length;
-}
+
 
 function main(){
   var field = Array(FIELD_HEIGHT);
@@ -99,7 +123,6 @@ function main(){
   }
 
   var currentShape;
-  var currentShapeCenter;
 
   function nextShape(){
     if(currentShape){
@@ -107,10 +130,10 @@ function main(){
     }
     currentShape = shapes.shift();
     currentShape.currentRotationIndex = 0;
-    currentShapeCenter = {x: Math.floor(FIELD_WIDTH/2), y: currentShape.initialYOffset};
+
   }
   nextShape();
-
+  var piece = Piece(currentShape);
   var canvas;
 
   canvas = document.getElementById('tutorial');
@@ -118,17 +141,17 @@ function main(){
   canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
   if (canvas.getContext){
     var ctx = canvas.getContext('2d');
-    drawShape(ctx, currentShape, currentShapeCenter, currentShape.color);
+    piece.draw(ctx, false);
 
     setInterval(function(){
       drawField(ctx, field);
     }, 1000/FPS);
 
     setInterval(function(){
-      drawShape(ctx, currentShape, currentShapeCenter, 'white');
-      rotateShape(currentShape);
-      currentShapeCenter.y += 1;
-      drawShape(ctx, currentShape, currentShapeCenter, currentShape.color);
+      piece.draw(ctx, true);
+      piece.rotate();
+      piece.move(0, 1);
+      piece.draw(ctx, false);
     }, 1000/1);//SPEED_PER_SEC);
   }
 }
