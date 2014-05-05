@@ -116,9 +116,21 @@ function Piece(shape){
     });
   }
 
-  function move(xOffset, yOffset){
+  function move(field, xOffset, yOffset){
+    var oldX = currentCenter.x;
+    var oldY = currentCenter.y;
     currentCenter.x += xOffset;
     currentCenter.y += yOffset;
+
+    var touches = false;
+    eachBlock(function(x, y){
+      if(field.isFilled(x, y)){
+        currentCenter.x = oldX;
+        currentCenter.y = oldY;
+        touches = true;
+      }
+    });
+    return touches;
   }
 
   function touchesLeftBorder(){
@@ -192,9 +204,22 @@ function Field(){
     });
   }
 
+  function isFilled(x, y){
+    if(x < 0 || x > FIELD_WIDTH-1 || y > FIELD_HEIGHT-1){
+      return true;
+    }
+
+    if(x >= 0 && x < FIELD_WIDTH && y >= 0 && y < FIELD_HEIGHT){
+      return content[y][x] !== undefined;
+    } else {
+      return false;
+    }
+  }
+
   return {
     draw: draw,
-    addPiece: addPiece
+    addPiece: addPiece,
+    isFilled: isFilled
   };
 }
 
@@ -236,17 +261,15 @@ function main(){
       if (currentKey){
         piece.draw(ctx, true);
         if (currentKey === KEYS.RIGHT && ! piece.touchesRightBorder()){
-          piece.move(1, 0);
+          piece.move(field, 1, 0);
         } else if (currentKey === KEYS.LEFT && !piece.touchesLeftBorder()){
-          piece.move(-1, 0);
+          piece.move(field, -1, 0);
         } else if (currentKey === KEYS.DOWN){
-          if (piece.touchesBottomBorder()){
+          var touched = piece.move(field, 0, 1);
+          if (touched){
             field.addPiece(piece);
             piece = nextPiece();
-          } else {
-            piece.move(0, 1);
           }
-
         } else if (currentKey === KEYS.UP){
           piece.rotate();
           currentKey = undefined;
@@ -261,7 +284,7 @@ function main(){
         field.addPiece(piece);
         piece = nextPiece();
       } else {
-        piece.move(0, 1);
+        piece.move(field, 0, 1);
         piece.draw(ctx, false);
       }
     }, 1000/0.1);//SPEED_PER_SEC);
