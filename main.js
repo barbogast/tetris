@@ -151,48 +151,68 @@ function Piece(shape){
     return touches;
   }
 
+  function getColor(){
+    return shape.color;
+  }
+
   return {
     draw: draw,
     rotate: rotate,
     move: move,
     touchesLeftBorder: touchesLeftBorder,
     touchesRightBorder: touchesRightBorder,
-    touchesBottomBorder: touchesBottomBorder
+    touchesBottomBorder: touchesBottomBorder,
+    getColor: getColor,
+    eachBlock: eachBlock
   };
 }
 
-function drawField(ctx, field){
-  for(var y=0; y<FIELD_HEIGHT; y++){
-    for(var x=0; x<FIELD_WIDTH; x++){
-      if(field[y][x]){
-        ctx.fillStyle = COLORS[field[y][x]];
-        ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+function Field(){
+  var content = [];
+  var content = Array(FIELD_HEIGHT);
+  for(var i=0; i< FIELD_HEIGHT; i++){
+    content[i] = Array(FIELD_WIDTH);
+  }
+
+  function draw(ctx){
+    for(var y=0; y<FIELD_HEIGHT; y++){
+      for(var x=0; x<FIELD_WIDTH; x++){
+        if(content[y][x]){
+          ctx.fillStyle = COLORS[content[y][x]];
+          ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        }
       }
     }
   }
+
+  function addPiece(piece){
+    piece.eachBlock(function(x, y){
+      content[y][x] = piece.getColor();
+    });
+  }
+
+  return {
+    draw: draw,
+    addPiece: addPiece
+  };
 }
 
 
-
-
 function main(){
-  var field = Array(FIELD_HEIGHT);
-  for(var i=0; i< FIELD_HEIGHT; i++){
-    field[i] = Array(FIELD_WIDTH);
-  }
 
   var currentShape;
+  var field = Field();
 
-  function nextShape(){
+  function nextPiece(){
     if(currentShape){
       shapes.push(currentShape);
     }
     currentShape = shapes.shift();
     currentShape.currentRotationIndex = 0;
-
+    return Piece(currentShape);
   }
-  nextShape();
-  var piece = Piece(currentShape);
+  var piece = nextPiece();
 
   var currentKey;
   document.onkeydown = function(e){
@@ -212,15 +232,21 @@ function main(){
     piece.draw(ctx, false);
 
     setInterval(function(){
-      drawField(ctx, field);
+      field.draw(ctx);
       if (currentKey){
         piece.draw(ctx, true);
         if (currentKey === KEYS.RIGHT && ! piece.touchesRightBorder()){
           piece.move(1, 0);
         } else if (currentKey === KEYS.LEFT && !piece.touchesLeftBorder()){
           piece.move(-1, 0);
-        } else if (currentKey === KEYS.DOWN && !piece.touchesBottomBorder()){
-          piece.move(0, 1);
+        } else if (currentKey === KEYS.DOWN){
+          if (piece.touchesBottomBorder()){
+            field.addPiece(piece);
+            piece = nextPiece();
+          } else {
+            piece.move(0, 1);
+          }
+
         } else if (currentKey === KEYS.UP){
           piece.rotate();
           currentKey = undefined;
@@ -231,8 +257,13 @@ function main(){
 
     setInterval(function(){
       piece.draw(ctx, true);
-      piece.move(0, 1);
-      piece.draw(ctx, false);
-    }, 1000/1);//SPEED_PER_SEC);
+      if (piece.touchesBottomBorder()){
+        field.addPiece(piece);
+        piece = nextPiece();
+      } else {
+        piece.move(0, 1);
+        piece.draw(ctx, false);
+      }
+    }, 1000/0.1);//SPEED_PER_SEC);
   }
 }
