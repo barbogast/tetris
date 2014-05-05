@@ -121,10 +121,43 @@ function Piece(shape){
     currentCenter.y += yOffset;
   }
 
+  function touchesLeftBorder(){
+    var touches = false;
+    eachCurrentOffset(function(offset){
+      if(currentCenter.x+offset[0] <= 0){
+        touches = true;
+      }
+    });
+    return touches;
+  }
+
+  function touchesRightBorder(){
+    var touches = false;
+    eachCurrentOffset(function(offset){
+      if(currentCenter.x+offset[0] >= FIELD_WIDTH-1){
+        touches = true;
+      }
+    });
+    return touches;
+  }
+
+  function touchesBottomBorder(){
+    var touches = false;
+    eachCurrentOffset(function(offset){
+      if(currentCenter.y+offset[1] >= FIELD_HEIGHT){
+        touches = true;
+      }
+    });
+    return touches;
+  }
+
   return {
     draw: draw,
     rotate: rotate,
-    move: move
+    move: move,
+    touchesLeftBorder: touchesLeftBorder,
+    touchesRightBorder: touchesRightBorder,
+    touchesBottomBorder: touchesBottomBorder
   };
 }
 
@@ -182,11 +215,11 @@ function main(){
       drawField(ctx, field);
       if (currentKey){
         piece.draw(ctx, true);
-        if (currentKey === KEYS.RIGHT){
+        if (currentKey === KEYS.RIGHT && ! piece.touchesRightBorder()){
           piece.move(1, 0);
-        } else if (currentKey === KEYS.LEFT){
+        } else if (currentKey === KEYS.LEFT && !piece.touchesLeftBorder()){
           piece.move(-1, 0);
-        } else if (currentKey === KEYS.DOWN){
+        } else if (currentKey === KEYS.DOWN && !piece.touchesBottomBorder()){
           piece.move(0, 1);
         } else if (currentKey === KEYS.UP){
           piece.rotate();
