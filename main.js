@@ -99,7 +99,6 @@ function Piece(shape){
     // Revert the rotation to the old index if the new rotation would
     // mean that a part of the piece would be below zero
     eachCurrentOffset(function(offset){
-      console.log(currentCenter.y, offset[1]);
       if (currentCenter.y+offset[1] >= FIELD_HEIGHT){
         currentRotationIndex = oldRotationIndex;
       }
