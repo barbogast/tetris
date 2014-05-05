@@ -60,8 +60,8 @@ var shapes = [{
      [ 1,  0],  // 1
      [ 0, -1]], // 2
   ],
-  currentRotationIndex: 0,
-  blocks: 3
+  initialRotation: 0,
+  initialYOffset: -1,
 }]
 
 
@@ -106,10 +106,10 @@ function main(){
       currentShape.push(shapes);
     }
     currentShape = shapes.shift();
-    currentShapeCenter = {x: Math.floor(FIELD_WIDTH/2), y: 1-currentShape.initialHeight};
+    currentShape.currentRotationIndex = 0;
+    currentShapeCenter = {x: Math.floor(FIELD_WIDTH/2), y: currentShape.initialYOffset};
   }
   nextShape();
-
 
   var canvas;
 
