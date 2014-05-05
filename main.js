@@ -169,16 +169,20 @@ function Piece(shape){
     }
   }
 
-  function draw(ctx, remove){
-    var x, y, color;
-    if (remove){
-      ctx.fillStyle = 'white';
-    } else {
-      ctx.fillStyle = shape.color;
-    }
+  function draw_private(ctx, color){
+    var x, y;
+    ctx.fillStyle = color;
     eachBlock(function(x, y){
       ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
     });
+  }
+
+  function draw(ctx){
+    draw_private(ctx, shape.color);
+  }
+
+  function remove(ctx){
+    draw_private(ctx, 'white');
   }
 
   function rotate(){
@@ -227,6 +231,7 @@ function Piece(shape){
 
   return {
     draw: draw,
+    remove: remove,
     rotate: rotate,
     move: move,
     getColor: getColor,
@@ -309,7 +314,7 @@ function main(){
   canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
   if (canvas.getContext){
     var ctx = canvas.getContext('2d');
-    piece.draw(ctx, false);
+    piece.draw(ctx);
 
     var lastTick = new Date();
     setInterval(function(){
@@ -321,27 +326,27 @@ function main(){
       }
 
       if (goDown || currentKey === KEYS.DOWN){
-        piece.draw(ctx, true);
+        piece.remove(ctx);
         var touched = piece.move(field, 0, 1);
         if (touched){
           field.addPiece(piece);
           field.draw(ctx);
           piece = nextPiece();
         } else {
-          piece.draw(ctx, false);
+          piece.draw(ctx);
         }
       } else if (currentKey === KEYS.LEFT){
-        piece.draw(ctx, true);
+        piece.remove(ctx);
         piece.move(field, -1, 0);
-        piece.draw(ctx, false);
+        piece.draw(ctx);
       } else if (currentKey === KEYS.RIGHT){
-        piece.draw(ctx, true);
+        piece.remove(ctx);
         piece.move(field, 1, 0);
-        piece.draw(ctx, false);
+        piece.draw(ctx);
       } else if (currentKey === KEYS.UP){
-        piece.draw(ctx, true);
+        piece.remove(ctx);
         piece.rotate();
-        piece.draw(ctx, false);
+        piece.draw(ctx);
         currentKey = undefined;
       }
     }, 1000/FPS);
