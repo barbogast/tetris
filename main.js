@@ -185,7 +185,7 @@ function Piece(shape){
     draw_private(ctx, 'white');
   }
 
-  function rotate(){
+  function rotate(field){
     var oldRotationIndex = currentRotationIndex;
     currentRotationIndex = (currentRotationIndex + 1) % shape.rotations.length;
 
@@ -201,9 +201,9 @@ function Piece(shape){
     // left/right border the piece is moved on into the middle
     eachBlock(function(x, y){
       if(x < 0){
-        move(1, 0);
+        move(field, 1, 0);
       } else if (x > FIELD_WIDTH-1){
-        move(-1, 0);
+        move(field, -1, 0);
       }
     });
   }
@@ -366,7 +366,7 @@ function main(){
         piece.draw(ctx);
       } else if (currentKey === KEYS.UP){
         piece.remove(ctx);
-        piece.rotate();
+        piece.rotate(field);
         piece.draw(ctx);
         currentKey = undefined;
       }
