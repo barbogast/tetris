@@ -23,44 +23,46 @@ var COLORS = {
 }
 
 
-var shapes = [
-  {
-    color: 'blue',
-    rotations: [
-      //   1
-      //   c2
-      //   3
-      [[ 0, -1],  // 1
-       [ 0,  0],  // center
-       [ 1,  0],  // 2
-       [ 0,  1]], // 3
+var shapes = [{
+  color: 'blue',
 
-      //    2
-      //   1c3
-      [[ 0,  1],  // 2
-       [-1,  0],  // 1
-       [ 0,  0],  // center
-       [ 1,  0]], // 3
+  // Array of the various possible rotations of the shape. Each rotation
+  // if an array of offsets. Each offset is an array of the x offset and
+  // the y offset of the center.
+  rotations: [
+    //   1
+    //   c2
+    //   3
+    [[ 0, -1],  // 1
+     [ 0,  0],  // center
+     [ 1,  0],  // 2
+     [ 0,  1]], // 3
 
-      //    3
-      //   2c
-      //    1
-      [[ 0, -1],  // 3
-       [-1,  0],  // 2
-       [ 0,  0],  // center
-       [ 0,  1]], // 1
+    //    2
+    //   1c3
+    [[ 0,  1],  // 2
+     [-1,  0],  // 1
+     [ 0,  0],  // center
+     [ 1,  0]], // 3
 
-      //   3c1
-      //    2
-      [[-1,  0],  // 3
-       [ 0,  0],  // center
-       [ 1,  0],  // 1
-       [ 0, -1]], // 2
-    ],
-    currentRotationIndex: 0,
-    initialHeight: 3
-  }
-]
+    //    3
+    //   2c
+    //    1
+    [[ 0, -1],  // 3
+     [-1,  0],  // 2
+     [ 0,  0],  // center
+     [ 0,  1]], // 1
+
+    //   3c1
+    //    2
+    [[-1,  0],  // 3
+     [ 0,  0],  // center
+     [ 1,  0],  // 1
+     [ 0, -1]], // 2
+  ],
+  currentRotationIndex: 0,
+  blocks: 3
+}]
 
 
 function drawField(ctx, field){
