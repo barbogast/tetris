@@ -134,8 +134,17 @@ function main(){
   }
   nextShape();
   var piece = Piece(currentShape);
-  var canvas;
 
+  var currentKey;
+  document.onkeydown = function(e){
+    currentKey = e.keyCode;
+    if (KEYS[e.keyCode]){return false;}
+  };
+  document.onkeyup = function(e){
+    currentKey = undefined;
+  };
+
+  var canvas;
   canvas = document.getElementById('tutorial');
   canvas.width = FIELD_WIDTH * BLOCK_SIZE;
   canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
@@ -145,11 +154,24 @@ function main(){
 
     setInterval(function(){
       drawField(ctx, field);
+      if (currentKey){
+        piece.draw(ctx, true);
+        if (currentKey === KEYS.RIGHT){
+          piece.move(1, 0);
+        } else if (currentKey === KEYS.LEFT){
+          piece.move(-1, 0);
+        } else if (currentKey === KEYS.DOWN){
+          piece.move(0, 1);
+        } else if (currentKey === KEYS.UP){
+          piece.rotate();
+          currentKey = undefined;
+        }
+        piece.draw(ctx, false);
+      }
     }, 1000/FPS);
 
     setInterval(function(){
       piece.draw(ctx, true);
-      piece.rotate();
       piece.move(0, 1);
       piece.draw(ctx, false);
     }, 1000/1);//SPEED_PER_SEC);
