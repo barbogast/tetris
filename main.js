@@ -133,36 +133,6 @@ function Piece(shape){
     return touches;
   }
 
-  function touchesLeftBorder(){
-    var touches = false;
-    eachBlock(function(x, y){
-      if(x <= 0){
-        touches = true;
-      }
-    });
-    return touches;
-  }
-
-  function touchesRightBorder(){
-    var touches = false;
-    eachBlock(function(x, y){
-      if(x >= FIELD_WIDTH-1){
-        touches = true;
-      }
-    });
-    return touches;
-  }
-
-  function touchesBottomBorder(){
-    var touches = false;
-    eachBlock(function(x, y){
-      if(y >= FIELD_HEIGHT-1){
-        touches = true;
-      }
-    });
-    return touches;
-  }
-
   function getColor(){
     return shape.color;
   }
@@ -171,9 +141,6 @@ function Piece(shape){
     draw: draw,
     rotate: rotate,
     move: move,
-    touchesLeftBorder: touchesLeftBorder,
-    touchesRightBorder: touchesRightBorder,
-    touchesBottomBorder: touchesBottomBorder,
     getColor: getColor,
     eachBlock: eachBlock
   };
@@ -260,9 +227,9 @@ function main(){
       field.draw(ctx);
       if (currentKey){
         piece.draw(ctx, true);
-        if (currentKey === KEYS.RIGHT && ! piece.touchesRightBorder()){
+        if (currentKey === KEYS.RIGHT){
           piece.move(field, 1, 0);
-        } else if (currentKey === KEYS.LEFT && !piece.touchesLeftBorder()){
+        } else if (currentKey === KEYS.LEFT){
           piece.move(field, -1, 0);
         } else if (currentKey === KEYS.DOWN){
           var touched = piece.move(field, 0, 1);
