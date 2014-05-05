@@ -252,8 +252,11 @@ function Field(){
       for(var x=0; x<FIELD_WIDTH; x++){
         if(content[y][x]){
           ctx.fillStyle = content[y][x];
-          ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+        } else {
+          ctx.fillStyle = 'white';
         }
+        ctx.fillRect(x*BLOCK_SIZE, y*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
       }
     }
   }
@@ -276,10 +279,27 @@ function Field(){
     }
   }
 
+  function removeCompleteLines(){
+    for(var y=0; y<FIELD_HEIGHT; y++){
+      var isComplete = true;
+      for(var x=0; x<FIELD_WIDTH; x++){
+        if(content[y][x] === undefined){
+          isComplete = false;
+          break;
+        }
+      }
+      if(isComplete){
+        content.splice(y+1, 1);
+        content.splice(0, 0, Array(FIELD_WIDTH));
+      }
+    }
+  }
+
   return {
     draw: draw,
     addPiece: addPiece,
-    isFilled: isFilled
+    isFilled: isFilled,
+    removeCompleteLines: removeCompleteLines,
   };
 }
 
@@ -330,6 +350,7 @@ function main(){
         var touched = piece.move(field, 0, 1);
         if (touched){
           field.addPiece(piece);
+          field.removeCompleteLines();
           field.draw(ctx);
           piece = nextPiece();
         } else {
