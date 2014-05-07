@@ -214,15 +214,15 @@ function Piece(shape){
     currentCenter.x += xOffset;
     currentCenter.y += yOffset;
 
-    var touches = false;
+    var wasMoved = true;
     eachBlock(function(x, y){
       if(field.isFilled(x, y)){
         currentCenter.x = oldX;
         currentCenter.y = oldY;
-        touches = true;
+        wasMoved = false;
       }
     });
-    return touches;
+    return wasMoved;
   }
 
   function getColor(){
@@ -347,8 +347,8 @@ function main(){
 
       if (goDown || currentKey === KEYS.DOWN){
         piece.remove(ctx);
-        var touched = piece.move(field, 0, 1);
-        if (touched){
+        var wasMoved = piece.move(field, 0, 1);
+        if (!wasMoved){
           field.addPiece(piece);
           field.removeCompleteLines();
           field.draw(ctx);
