@@ -380,57 +380,55 @@ function main(){
     currentKey = undefined;
   };
 
-  var canvas;
-  canvas = document.getElementById('gamefield');
+  var canvas = document.getElementById('gamefield');
   canvas.width = FIELD_WIDTH * BLOCK_SIZE;
   canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
-  if (canvas.getContext){
-    var ctx = canvas.getContext('2d');
-    piece.draw(ctx);
 
-    var lastTick = new Date();
-    var dissolvedLines = 0;
-    var intervalId = setInterval(function(){
-      var goDown = false;
-      var currentTick = new Date();
-      if (currentTick - lastTick > 1000 / TICKS_PER_SEC){
-        goDown = true;
-        lastTick = currentTick;
-      }
+  var ctx = canvas.getContext('2d');
+  piece.draw(ctx);
 
-      if (goDown || currentKey === KEYS.DOWN){
-        piece.remove(ctx);
-        var wasMoved = piece.move(field, 0, 1);
-        if (!wasMoved){
-          field.addPiece(piece);
-          dissolvedLines += field.removeCompleteLines();
-          field.draw(ctx);
-          piece = nextPiece();
-          var gameOver = false;
-          piece.eachBlock(function(x, y){
-            if(field.isFilled(x, y)){
-              clearInterval(intervalId);
-              gameOver = true;
-            }
-          });
-          updateMessage(dissolvedLines, gameOver);
-        } else {
-          piece.draw(ctx);
-        }
-      } else if (currentKey === KEYS.LEFT){
-        piece.remove(ctx);
-        piece.move(field, -1, 0);
-        piece.draw(ctx);
-      } else if (currentKey === KEYS.RIGHT){
-        piece.remove(ctx);
-        piece.move(field, 1, 0);
-        piece.draw(ctx);
-      } else if (currentKey === KEYS.UP){
-        piece.remove(ctx);
-        piece.rotate(field);
+  var lastTick = new Date();
+  var dissolvedLines = 0;
+  var intervalId = setInterval(function(){
+    var goDown = false;
+    var currentTick = new Date();
+    if (currentTick - lastTick > 1000 / TICKS_PER_SEC){
+      goDown = true;
+      lastTick = currentTick;
+    }
+
+    if (goDown || currentKey === KEYS.DOWN){
+      piece.remove(ctx);
+      var wasMoved = piece.move(field, 0, 1);
+      if (!wasMoved){
+        field.addPiece(piece);
+        dissolvedLines += field.removeCompleteLines();
+        field.draw(ctx);
+        piece = nextPiece();
+        var gameOver = false;
+        piece.eachBlock(function(x, y){
+          if(field.isFilled(x, y)){
+            clearInterval(intervalId);
+            gameOver = true;
+          }
+        });
+        updateMessage(dissolvedLines, gameOver);
+      } else {
         piece.draw(ctx);
       }
-      currentKey = undefined;
-    }, 1000/FPS);
-  }
+    } else if (currentKey === KEYS.LEFT){
+      piece.remove(ctx);
+      piece.move(field, -1, 0);
+      piece.draw(ctx);
+    } else if (currentKey === KEYS.RIGHT){
+      piece.remove(ctx);
+      piece.move(field, 1, 0);
+      piece.draw(ctx);
+    } else if (currentKey === KEYS.UP){
+      piece.remove(ctx);
+      piece.rotate(field);
+      piece.draw(ctx);
+    }
+    currentKey = undefined;
+  }, 1000/FPS);
 }
