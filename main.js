@@ -1,5 +1,10 @@
 "use strict";
 
+// http://stackoverflow.com/a/1527820
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 var KEYS = {
   LEFT: 37,
   UP: 38,
