@@ -340,7 +340,7 @@ function main(){
   };
 
   var canvas;
-  canvas = document.getElementById('tutorial');
+  canvas = document.getElementById('gamefield');
   canvas.width = FIELD_WIDTH * BLOCK_SIZE;
   canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
   if (canvas.getContext){
