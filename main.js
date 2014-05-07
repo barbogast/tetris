@@ -9,12 +9,12 @@ var KEYS = {
 };
 
 var FPS = 30;
-var SPEED_PER_SEC = 5;
+var TICKS_PER_SEC = 3;
 
 
-var FIELD_WIDTH = 40;
-var FIELD_HEIGHT = 80;
-var BLOCK_SIZE = 10;
+var FIELD_WIDTH = 10;
+var FIELD_HEIGHT = 17;
+var BLOCK_SIZE = 20;
 var COLORS = {
   1: 'yellow',
   2: 'red',
