@@ -274,7 +274,11 @@ function Field(){
 
   function addPiece(piece){
     piece.eachBlock(function(x, y){
-      content[y][x] = piece.getColor();
+      // We need to check the field bounds since at the game and a
+      // partly hidden piece could be added
+      if(x > 0 && x < FIELD_WIDTH && y > 0 && y < FIELD_HEIGHT){
+        content[y][x] = piece.getColor();
+      }
     });
   }
 
