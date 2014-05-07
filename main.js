@@ -376,14 +376,7 @@ function Preview(){
 }
 
 
-function main(){
-  var preview = Preview();
-
-  var fieldCanvas = document.getElementById('gamefield');
-  fieldCanvas.width = FIELD_WIDTH * BLOCK_SIZE;
-  fieldCanvas.height = FIELD_HEIGHT * BLOCK_SIZE;
-
-  var field = Field();
+function PieceBox(preview){
   var nextShapeIndex = getRandomInt(0, SHAPES.length-1);
 
   function nextPiece(){
@@ -395,7 +388,18 @@ function main(){
     return Piece(SHAPES[currentShapeIndex]);
   }
 
-  var piece = nextPiece();
+  return {nextPiece: nextPiece};
+}
+
+
+function main(){
+  var preview = Preview();
+  var piecebox = PieceBox(preview);
+
+  var fieldCanvas = document.getElementById('gamefield');
+  fieldCanvas.width = FIELD_WIDTH * BLOCK_SIZE;
+  fieldCanvas.height = FIELD_HEIGHT * BLOCK_SIZE;
+  var ctx = fieldCanvas.getContext('2d');
 
   var currentKey;
   document.onkeydown = function(e){
@@ -406,11 +410,11 @@ function main(){
     currentKey = undefined;
   };
 
-  var ctx = fieldCanvas.getContext('2d');
-  piece.draw(ctx);
-
+  var field = Field();
   var lastTick = new Date();
   var dissolvedLines = 0;
+  var piece = piecebox.nextPiece();
+  piece.draw(ctx);
   var intervalId = setInterval(function(){
     var goDown = false;
     var currentTick = new Date();
@@ -426,7 +430,7 @@ function main(){
         field.addPiece(piece);
         dissolvedLines += field.removeCompleteLines();
         field.draw(ctx);
-        piece = nextPiece();
+        piece = piecebox.nextPiece();
         var gameOver = false;
         piece.eachBlock(function(x, y){
           if(field.isFilled(x, y)){
