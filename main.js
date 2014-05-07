@@ -374,6 +374,10 @@ function main(){
   var previewCanvas = document.getElementById('preview');
   previewCanvas.width = previewCanvas.height = BLOCK_SIZE * 7;
 
+  var fieldCanvas = document.getElementById('gamefield');
+  fieldCanvas.width = FIELD_WIDTH * BLOCK_SIZE;
+  fieldCanvas.height = FIELD_HEIGHT * BLOCK_SIZE;
+
   var field = Field();
   var nextShapeIndex = getRandomInt(0, SHAPES.length-1);
 
@@ -397,11 +401,7 @@ function main(){
     currentKey = undefined;
   };
 
-  var canvas = document.getElementById('gamefield');
-  canvas.width = FIELD_WIDTH * BLOCK_SIZE;
-  canvas.height = FIELD_HEIGHT * BLOCK_SIZE;
-
-  var ctx = canvas.getContext('2d');
+  var ctx = fieldCanvas.getContext('2d');
   piece.draw(ctx);
 
   var lastTick = new Date();
