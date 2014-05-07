@@ -361,18 +361,23 @@ function updateMessage(resolvedLines, gameOver){
   p.innerHTML = msg;
 }
 
-function updatePreview(piece){
+function Preview(){
   var canvas = document.getElementById('preview');
+  canvas.width = canvas.height = BLOCK_SIZE * 7;
   var ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  piece.moveTo(3, 3);
-  piece.draw(ctx);
+
+  function update(piece){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    piece.moveTo(3, 3);
+    piece.draw(ctx);
+  }
+
+  return {update: update};
 }
 
 
 function main(){
-  var previewCanvas = document.getElementById('preview');
-  previewCanvas.width = previewCanvas.height = BLOCK_SIZE * 7;
+  var preview = Preview();
 
   var fieldCanvas = document.getElementById('gamefield');
   fieldCanvas.width = FIELD_WIDTH * BLOCK_SIZE;
@@ -386,7 +391,7 @@ function main(){
     while(nextShapeIndex === currentShapeIndex){
       nextShapeIndex = getRandomInt(0, SHAPES.length-1);
     }
-    updatePreview(Piece(SHAPES[nextShapeIndex]));
+    preview.update(Piece(SHAPES[nextShapeIndex]));
     return Piece(SHAPES[currentShapeIndex]);
   }
 
