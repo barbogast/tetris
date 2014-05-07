@@ -189,24 +189,32 @@ function Piece(shape){
   }
 
   function rotate(field){
+    // store the current rotation
     var oldRotationIndex = currentRotationIndex;
+
+    // rotate
     currentRotationIndex = (currentRotationIndex + 1) % shape.rotations.length;
 
-    // Revert the rotation to the old index if the new rotation would
-    // mean that a part of the piece would be below zero
+    // for each block in the rotated piece
     eachBlock(function(x, y){
-      if (y > FIELD_HEIGHT){
-        currentRotationIndex = oldRotationIndex;
-      }
-    });
-
-    // If the new rotation means that the piece would be beyond the
-    // left/right border the piece is moved on into the middle
-    eachBlock(function(x, y){
-      if(x < 0){
-        move(field, 1, 0);
-      } else if (x > FIELD_WIDTH-1){
-        move(field, -1, 0);
+      // if the block is already filled on the field
+      if (field.isFilled(x, y)){
+        // try to move the piece one block to the right
+        var wasMoved = move(field, 1, 0);
+        // if there is no space
+        if (!wasMoved){
+          // try to move the piece on block to the left
+          wasMoved = move(field, -1, 0);
+          // if there still is no space
+          if (!wasMoved){
+            // revert the rotation
+            currentRotationIndex = oldRotationIndex;
+          }
+        }
+        // no more blocks need to be checked at this point: either the
+        // piece was moved to a valid position or the rotation was
+        // reverted
+        return false;
       }
     });
   }
