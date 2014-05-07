@@ -384,8 +384,8 @@ function main(){
         piece.remove(ctx);
         piece.rotate(field);
         piece.draw(ctx);
-        currentKey = undefined;
       }
+      currentKey = undefined;
     }, 1000/FPS);
   }
 }
