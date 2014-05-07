@@ -348,7 +348,7 @@ function main(){
     piece.draw(ctx);
 
     var lastTick = new Date();
-    setInterval(function(){
+    var intervalId = setInterval(function(){
       var goDown = false;
       var currentTick = new Date();
       if (currentTick - lastTick > 1000 / TICKS_PER_SEC){
@@ -364,6 +364,11 @@ function main(){
           field.removeCompleteLines();
           field.draw(ctx);
           piece = nextPiece();
+          piece.eachBlock(function(x, y){
+            if(field.isFilled(x, y)){
+              clearInterval(intervalId);
+            }
+          });
         } else {
           piece.draw(ctx);
         }
