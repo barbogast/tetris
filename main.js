@@ -28,154 +28,178 @@ var COLORS = {
 }
 
 
+// Converts a string representation of a shape into an array
+// representation.
+// The return value is an array of block coordinates. Each block
+// coordinate is an array of the horizontal and vertical distance to the
+// center of the block.
+// The string representation must be an array of strings with equal
+// length. The strings may contain 'X', 'C' and blanks. 'C' marks the
+// center of the block. The resulting array will contain an inner array
+// for each 'X': [horizontalDistanceToCenter, verticalDistanceToCenter]
+// Example:
+// [
+//   '  X  ',
+//   '  C  ',
+//   '  XX '
+// ]
+//
+// will become
+// [
+// [0, -1]
+// [0,  0]
+// [1,  0]
+// [1,  1]
+// ]
+
+function convertShape(shape){
+  var centerX;
+  var centerY;
+  var previousLength;
+  for(var i=0; i<shape.length; i++){
+    var line = shape[i];
+
+    if(previousLength !== undefined && line.length !== previousLength){
+      alert('Error: shape has lines with different lengths');
+    }
+    previousLength = line.length;
+
+    var idx = line.indexOf('C');
+    if(idx >= 0){
+      if(centerX !== undefined){
+        alert("Error: shape has two 'C'");
+      }
+      centerX = idx;
+      centerY = i;
+    }
+  }
+
+  if(centerX === undefined){
+    alert('Error: could not find center of shape');
+  }
+
+  var shapeArray = [];
+  for(var y=0; y<shape.length; y++){
+    for(var x=0; x < shape[y].length; x++){
+      if (shape[y][x] === 'X' || shape[y][x] === 'C'){
+        shapeArray.push([x-centerX, y-centerY])
+      }
+    }
+  }
+  return shapeArray;
+}
+
+
 var SHAPES = [{
   color: 'green',
-
-  // Array of the various possible rotations of the shape. Each rotation
-  // if an array of offsets. Each offset is an array of the x offset and
-  // the y offset of the center.
-  rotations: [
-    //   1
-    //   c2
-    //   3
-    [[ 0, -1],  // 1
-     [ 0,  0],  // center
-     [ 1,  0],  // 2
-     [ 0,  1]], // 3
-
-    //    2
-    //   1c3
-    [[ 0,  1],  // 2
-     [-1,  0],  // 1
-     [ 0,  0],  // center
-     [ 1,  0]], // 3
-
-    //    3
-    //   2c
-    //    1
-    [[ 0, -1],  // 3
-     [-1,  0],  // 2
-     [ 0,  0],  // center
-     [ 0,  1]], // 1
-
-    //   3c1
-    //    2
-    [[-1,  0],  // 3
-     [ 0,  0],  // center
-     [ 1,  0],  // 1
-     [ 0, -1]], // 2
-  ],
+  rotations: [[
+    '  X   ',
+    '  CX  ',
+    '  X   ',
+  ],[
+    '  XCX  ',
+    '   X   ',
+  ],[
+    '   X  ',
+    '  XC  ',
+    '   X  ',
+  ],[
+    '   X   ',
+    '  XCX  ',
+  ]],
   initialRotation: 0,
   initialYOffset: -1,
 },{
   color: 'blue',
-  rotations: [
-    //   1
-    //   c
-    //   23
-    [[0, -1],  // 1
-     [0,  0],  // center
-     [0,  1],  // 2
-     [1,  1]], // 3
-
-    //   2c1
-    //   3
-    [[-1, 0],  // 2
-     [ 0, 0],  // center
-     [ 1, 0],  // 1
-     [-1, 1]], // 3
-
-    //   32
-    //    c
-    //    1
-    [[-1, -1],  // 3
-     [ 0, -1],  // 2
-     [ 0,  0],  // center
-     [ 0,  1]], // 1
-
-    //      3
-    //    1c2
-    [[ 1, -1],  // 3
-     [-1,  0],  // 1
-     [ 0,  0],  // center
-     [ 1,  0]], // 2
-  ],
+  rotations: [[
+    '  X   ',
+    '  C   ',
+    '  XX  ',
+  ],[
+    '  XCX  ',
+    '  X    ',
+  ],[
+    '  XX  ',
+    '   C  ',
+    '   X  ',
+  ],[
+    '    X  ',
+    '  XCX  ',
+  ]],
+  initialRotation: 0,
+  initialYOffset: -1,
+},{
+  color: 'aqua',
+  rotations: [[
+    '   X  ',
+    '   C  ',
+    '  XX  ',
+  ],[
+    '  X    ',
+    '  XCX  ',
+  ],[
+    '  XX  ',
+    '  C   ',
+    '  X   ',
+  ],[
+    '  XCX  ',
+    '    X  ',
+  ]],
   initialRotation: 0,
   initialYOffset: -1,
 },{
   color: 'yellow',
-  rotations: [
-    //    c1
-    //   23
-    [[ 0,  0],  // center
-     [ 1,  0],  // 1
-     [-1,  1],  // 2
-     [ 0,  1]], // 3
-
-    //   1
-    //   c3
-    //    2
-    [[ 0, -1],  // 1
-     [ 0,  0],  // center
-     [ 1,  0],  // 3
-     [ 1,  1]]  // 2
-
-  ],
+  rotations: [[
+    '   CX  ',
+    '  XX   ',
+  ],[
+    '  X   ',
+    '  XC  ',
+    '   X  ',
+  ]],
   initialRotation: 0,
   initialYOffset: 0,
 },{
   color: 'purple',
-  rotations: [
-    //   1c
-    //    23
-    [[-1,  0],   // 1
-     [ 0,  0],   // center
-     [ 0,  1],   // 2
-     [ 1,  1]],  // 3
-
-    //    1
-    //   2c
-    //   3
-    [[ 0, -1],   // 1
-     [-1,  0],   // 2
-     [ 0,  0],   // center
-     [-1,  1]]   // 3
-  ],
+  rotations: [[
+    '  XC   ',
+    '   XX  ',
+  ],[
+    '   X  ',
+    '  XC  ',
+    '  X   ',
+  ]],
   initialRotation: 0,
   initialYOffset: -1
 },{
   color: 'red',
-  rotations: [
-    //   1
-    //   c
-    //   2
-    //   3
-    [[ 0, -1],  // 1
-     [ 0,  0],  // center
-     [ 0,  1],  // 2
-     [ 0,  2]], // 3
-
-    //   32c1
-    [[ -2, 0],  // 3
-     [ -1, 0],  // 2
-     [  0, 0],  // center
-     [  1, 0]], // 1
-    ],
-    initialRotation: 0,
-    initialYOffset: -1,
+  rotations: [[
+    '  X  ',
+    '  C  ',
+    '  X  ',
+    '  X  ',
+  ],[
+    '  XXCX  ',
+  ]],
+  initialRotation: 0,
+  initialYOffset: -1,
 },{
   color: 'orange',
-  rotations: [
-    //   c1
-    //   23
-    [[ 0,  0],  // center
-     [ 1,  0],  // 1
-     [ 0,  1],  // 2
-     [ 1,  1]],  // 3
-    ],
-    initialRotation: 0,
-    initialYOffset: 0,
-}]
+  rotations: [[
+    '  CX  ',
+    '  XX  ',
+  ]],
+  initialRotation: 0,
+  initialYOffset: 0,
+}];
+
+
+for(var i=0; i<SHAPES.length; i++){
+  for(var j=0; j<SHAPES[i].rotations.length; j++){
+    SHAPES[i].rotations[j] = convertShape(SHAPES[i].rotations[j]);
+  }
+}
+
 
 function Piece(shape){
   var currentRotationIndex = 0;
