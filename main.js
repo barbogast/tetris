@@ -381,8 +381,10 @@ function PieceBox(preview){
 
   function nextPiece(){
     var currentShapeIndex = nextShapeIndex;
-    while(nextShapeIndex === currentShapeIndex){
-      nextShapeIndex = getRandomInt(0, SHAPES.length-1);
+    if(SHAPES.length >= 2){
+      while(nextShapeIndex === currentShapeIndex){
+        nextShapeIndex = getRandomInt(0, SHAPES.length-1);
+      }
     }
     preview.update(Piece(SHAPES[nextShapeIndex]));
     return Piece(SHAPES[currentShapeIndex]);
