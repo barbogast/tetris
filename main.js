@@ -124,6 +124,26 @@ var SHAPES = [{
   initialRotation: 0,
   initialYOffset: 0,
 },{
+  color: 'purple',
+  rotations: [
+    //   1c
+    //    23
+    [[-1,  0],   // 1
+     [ 0,  0],   // center
+     [ 0,  1],   // 2
+     [ 1,  1]],  // 3
+
+    //    1
+    //   2c
+    //   3
+    [[ 0, -1],   // 1
+     [-1,  0],   // 2
+     [ 0,  0],   // center
+     [-1,  1]]   // 3
+  ],
+  initialRotation: 0,
+  initialYOffset: -1
+},{
   color: 'red',
   rotations: [
     //   1
