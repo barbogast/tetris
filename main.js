@@ -261,6 +261,11 @@ function Piece(shape){
     return wasMoved;
   }
 
+  function moveTo(x, y){
+    currentCenter.x = x;
+    currentCenter.y = y;
+  }
+
   function getColor(){
     return shape.color;
   }
@@ -270,6 +275,7 @@ function Piece(shape){
     remove: remove,
     rotate: rotate,
     move: move,
+    moveTo: moveTo,
     getColor: getColor,
     eachBlock: eachBlock
   };
@@ -355,17 +361,28 @@ function updateMessage(resolvedLines, gameOver){
   p.innerHTML = msg;
 }
 
+function updatePreview(piece){
+  var canvas = document.getElementById('preview');
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  piece.moveTo(3, 3);
+  piece.draw(ctx);
+}
+
 
 function main(){
+  var previewCanvas = document.getElementById('preview');
+  previewCanvas.width = previewCanvas.height = BLOCK_SIZE * 7;
+
   var field = Field();
-  var currentShapeIndex;
+  var nextShapeIndex = getRandomInt(0, SHAPES.length-1);
 
   function nextPiece(){
-    var newShapeIndex = currentShapeIndex;
-    while(newShapeIndex === currentShapeIndex){
-      newShapeIndex = getRandomInt(0, SHAPES.length-1);
+    var currentShapeIndex = nextShapeIndex;
+    while(nextShapeIndex === currentShapeIndex){
+      nextShapeIndex = getRandomInt(0, SHAPES.length-1);
     }
-    currentShapeIndex = newShapeIndex;
+    updatePreview(Piece(SHAPES[nextShapeIndex]));
     return Piece(SHAPES[currentShapeIndex]);
   }
 
