@@ -291,6 +291,7 @@ function Field(){
   }
 
   function removeCompleteLines(){
+    var count = 0;
     for(var y=0; y<FIELD_HEIGHT; y++){
       var isComplete = true;
       for(var x=0; x<FIELD_WIDTH; x++){
@@ -300,10 +301,12 @@ function Field(){
         }
       }
       if(isComplete){
+        count += 1;
         content.splice(y+1, 1);
         content.splice(0, 0, Array(FIELD_WIDTH));
       }
     }
+    return count;
   }
 
   return {
@@ -314,6 +317,10 @@ function Field(){
   };
 }
 
+function updateMessage(resolvedLines){
+  var p = document.getElementById('message');
+  p.innerHTML = 'Dissolved lines: ' + resolvedLines;
+}
 
 function main(){
 
@@ -361,7 +368,8 @@ function main(){
         var wasMoved = piece.move(field, 0, 1);
         if (!wasMoved){
           field.addPiece(piece);
-          field.removeCompleteLines();
+          resolvedLines += field.removeCompleteLines();
+          updateMessage(resolvedLines);
           field.draw(ctx);
           piece = nextPiece();
           piece.eachBlock(function(x, y){
