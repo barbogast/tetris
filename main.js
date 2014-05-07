@@ -23,7 +23,7 @@ var COLORS = {
 }
 
 
-var shapes = [{
+var SHAPES = [{
   color: 'green',
 
   // Array of the various possible rotations of the shape. Each rotation
@@ -322,19 +322,20 @@ function updateMessage(resolvedLines){
   p.innerHTML = 'Dissolved lines: ' + resolvedLines;
 }
 
-function main(){
 
-  var currentShape;
+function main(){
   var field = Field();
+  var currentShapeIndex;
 
   function nextPiece(){
-    if(currentShape){
-      shapes.push(currentShape);
+    var newShapeIndex = currentShapeIndex;
+    while(newShapeIndex === currentShapeIndex){
+      newShapeIndex = getRandomInt(0, SHAPES.length-1);
     }
-    currentShape = shapes.shift();
-    currentShape.currentRotationIndex = 0;
-    return Piece(currentShape);
+    currentShapeIndex = newShapeIndex;
+    return Piece(SHAPES[currentShapeIndex]);
   }
+
   var piece = nextPiece();
 
   var currentKey;
