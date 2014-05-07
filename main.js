@@ -355,6 +355,7 @@ function main(){
     piece.draw(ctx);
 
     var lastTick = new Date();
+    var dissolvedLines = 0;
     var intervalId = setInterval(function(){
       var goDown = false;
       var currentTick = new Date();
@@ -368,8 +369,8 @@ function main(){
         var wasMoved = piece.move(field, 0, 1);
         if (!wasMoved){
           field.addPiece(piece);
-          resolvedLines += field.removeCompleteLines();
-          updateMessage(resolvedLines);
+          dissolvedLines += field.removeCompleteLines();
+          updateMessage(dissolvedLines);
           field.draw(ctx);
           piece = nextPiece();
           piece.eachBlock(function(x, y){
