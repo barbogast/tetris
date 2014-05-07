@@ -161,11 +161,14 @@ function Piece(shape){
 
   function eachBlock(handler){
     var offsets = shape.rotations[currentRotationIndex];
-    var x, y;
+    var x, y, stopIteration;
     for(var i=0; i<offsets.length; i++){
       x = currentCenter.x+offsets[i][0];
       y = currentCenter.y+offsets[i][1];
-      handler(x, y);
+      stopIteration = handler(x, y);
+      if (stopIteration === false){
+        break;
+      }
     }
   }
 
