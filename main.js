@@ -327,7 +327,8 @@ function Field(){
 
   function removeCompleteLines(){
     var count = 0;
-    for(var y=0; y<FIELD_HEIGHT; y++){
+
+    for(var y=FIELD_HEIGHT-1; y>=0; y--){
       var isComplete = true;
       for(var x=0; x<FIELD_WIDTH; x++){
         if(content[y][x] === undefined){
@@ -336,10 +337,12 @@ function Field(){
         }
       }
       if(isComplete){
+        content.splice(y, 1);
         count += 1;
-        content.splice(y+1, 1);
-        content.splice(0, 0, Array(FIELD_WIDTH));
       }
+    }
+    for(var i=0; i<count; i++){
+      content.splice(0, 0, Array(FIELD_WIDTH));
     }
     return count;
   }
