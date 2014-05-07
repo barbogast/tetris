@@ -317,9 +317,13 @@ function Field(){
   };
 }
 
-function updateMessage(resolvedLines){
+function updateMessage(resolvedLines, gameOver){
   var p = document.getElementById('message');
-  p.innerHTML = 'Dissolved lines: ' + resolvedLines;
+  var msg = 'Dissolved lines: ' + resolvedLines;
+  if(gameOver){
+    msg = 'Game over. ' + msg;
+  }
+  p.innerHTML = msg;
 }
 
 
@@ -371,14 +375,16 @@ function main(){
         if (!wasMoved){
           field.addPiece(piece);
           dissolvedLines += field.removeCompleteLines();
-          updateMessage(dissolvedLines);
           field.draw(ctx);
           piece = nextPiece();
+          var gameOver = false;
           piece.eachBlock(function(x, y){
             if(field.isFilled(x, y)){
               clearInterval(intervalId);
+              gameOver = true;
             }
           });
+          updateMessage(dissolvedLines, gameOver);
         } else {
           piece.draw(ctx);
         }
